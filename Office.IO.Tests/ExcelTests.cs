@@ -76,6 +76,25 @@ namespace Office.IO.Tests
          }
       }
 
+      [TestMethod]
+      public void ReadAllRowsInColumnRangeFromSheetName()
+      {
+         string fileName = GetTestFileName();
+         using (ExcelReader xlsReader = new(fileName))
+         {
+            List<List<XlsRange>> cells = xlsReader.ReadRange("Sheet1", "F:G");
+
+            // loop rows in range 
+            foreach (var row in cells)
+            {
+               string colA = row[0].Address;
+
+               XlsRange firstColumn = row.Where(c => c.ColumnName == "D").Single();
+               Assert.IsTrue(firstColumn.ColumnName == "D");
+            }
+         }
+      }
+
       private static string GetTestFileName()
       {
          string folder = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), @"..\..\.."));

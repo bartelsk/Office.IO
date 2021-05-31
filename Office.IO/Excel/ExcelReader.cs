@@ -255,12 +255,19 @@ namespace BartelsOnline.Office.IO.Excel
       private static CellAddress GetCellAddress(string address)
       {
          int startIndex = address.IndexOfAny("0123456789".ToCharArray());
-         return new CellAddress()
-         {            
-            ColumnIndex = GetColumnIndex(address.Substring(0, startIndex)),
-            ColumnName = address.Substring(0, startIndex),
-            RowIndex = int.Parse(address.Substring(startIndex))
-         };
+         if (startIndex > -1)
+         {
+            return new CellAddress()
+            {
+               ColumnIndex = GetColumnIndex(address.Substring(0, startIndex)),
+               ColumnName = address.Substring(0, startIndex),
+               RowIndex = int.Parse(address.Substring(startIndex))
+            };
+         }
+         else
+         {
+            return new CellAddress() { ColumnName = address, ColumnIndex = -1, RowIndex = 1 };
+         }
       }
 
       /// <summary>
@@ -320,24 +327,62 @@ namespace BartelsOnline.Office.IO.Excel
             if (sepPos > 0)
             {
                rowData = new List<List<XlsRange>>();
-               CellAddress upperLeft = GetCellAddress(rangeAddress.Substring(0, sepPos));
+               
+               // Get range reference
+               CellAddress topLeft = GetCellAddress(rangeAddress.Substring(0, sepPos));
                CellAddress bottomRight = GetCellAddress(rangeAddress.Substring(sepPos + 1));
-               for (int row = upperLeft.RowIndex; row <= bottomRight.RowIndex; row++)
+
+               if (topLeft.ColumnIndex > -1)
                {
-                  List<XlsRange> columnData = new();
-                  for (int col = upperLeft.ColumnIndex; col <= bottomRight.ColumnIndex; col++)
+                  // Range of type "A1:B2"
+                  for (int row = topLeft.RowIndex; row <= bottomRight.RowIndex; row++)
                   {
-                     Cell theCell = GetCell(sheet, row, col);
-                     XlsRange xlsRange = new(GetColumnName(col), col, row, GetColumnName(col) + row, null);
-
-                     if (theCell != null)
+                     List<XlsRange> columnData = new();
+                     for (int col = topLeft.ColumnIndex; col <= bottomRight.ColumnIndex; col++)
                      {
-                        xlsRange.Value = GetCellValue(theCell);
-                     }
+                        Cell theCell = GetCell(sheet, row, col);
+                        XlsRange xlsRange = new(GetColumnName(col), col, row, GetColumnName(col) + row, null);
 
-                     columnData.Add(xlsRange);
+                        if (theCell != null)
+                        {
+                           xlsRange.Value = GetCellValue(theCell);
+                        }
+
+                        columnData.Add(xlsRange);
+                     }
+                     rowData.Add(columnData);
                   }
-                  rowData.Add(columnData);
+               }
+               else
+               {
+                  // Range of type "A:B"
+                  for (int row = topLeft.RowIndex; row <= 1048576; row++)
+                  {
+                     List<XlsRange> columnData = new();
+                     for (int col = 1; col <= 200; col++)
+                     {
+                        Cell theCell = GetCell(sheet, row, col);
+                        if (theCell != null)
+                        {
+                           XlsRange xlsRange = new(GetColumnName(col), col, row, GetColumnName(col) + row, GetCellValue(theCell));                           
+                           columnData.Add(xlsRange);
+                        }
+                        else
+                        {
+                           // No more columns in the current region
+                           break;
+                        }
+                     }
+                     if (columnData != null && columnData.Count > 0)
+                     {
+                        rowData.Add(columnData);
+                     }
+                     else
+                     {
+                        // Current region is now null, so no more rows
+                        break;
+                     }
+                  }
                }
             }
             else
@@ -346,6 +391,16 @@ namespace BartelsOnline.Office.IO.Excel
             }
          }
          return rowData;
+      }    
+
+      /// <summary>
+      /// Checks whether the specified string contains numbers only. 
+      /// </summary>
+      /// <param name="text">The text to check.</param>
+      /// <returns>True if the entire string has numeric values.</returns>
+      private static bool IsNumeric(string text)
+      {
+         return System.Text.RegularExpressions.Regex.IsMatch(text, "^[0-9]+$");
       }
 
       #endregion

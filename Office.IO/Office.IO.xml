@@ -130,6 +130,13 @@
             <param name="rangeAddress">A range address.</param>
             <returns>A List with row and column data of the specified address.</returns>
         </member>
+        <member name="M:BartelsOnline.Office.IO.Excel.ExcelReader.IsNumeric(System.String)">
+            <summary>
+            Checks whether the specified string contains numbers only. 
+            </summary>
+            <param name="text">The text to check.</param>
+            <returns>True if the entire string has numeric values.</returns>
+        </member>
         <member name="T:BartelsOnline.Office.IO.Excel.IExcelReader">
             <summary>
             This is the interface for the ExcelReader class.
