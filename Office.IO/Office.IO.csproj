@@ -13,6 +13,7 @@
     <RepositoryUrl>https://github.com/bartelsk/Office.IO</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>Office</PackageTags>
+    <Version>0.5</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
