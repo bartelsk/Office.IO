@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <RootNamespace>BartelsOnline.Office.IO</RootNamespace>
+    <PackageId>BartelsOnline.Office.IO</PackageId>
+    <Authors>Bartels Online</Authors>
+    <Product>BartelsOnline.Office.IO</Product>
+    <Copyright>© Bartels Online. All rights reserved.</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Description>A utility library that makes it easier to work with Office files using C#</Description>
+    <PackageProjectUrl>https://github.com/bartelsk/Office.IO</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/bartelsk/Office.IO</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>Office</PackageTags>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>C:\Dev\Repos\GitHub\bartelsk\Office.IO\Office.IO\Office.IO.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>C:\Dev\Repos\GitHub\bartelsk\Office.IO\Office.IO\Office.IO.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DocumentFormat.OpenXml" Version="2.13.0" />
+  </ItemGroup>
+
+</Project>

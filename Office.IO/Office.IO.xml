@@ -1,0 +1,211 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Office.IO</name>
+    </assembly>
+    <members>
+        <member name="T:BartelsOnline.Office.IO.Excel.ExcelReader">
+            <summary>
+            This class contains methods to easily read Excel cell and range values.
+            </summary>
+        </member>
+        <member name="M:BartelsOnline.Office.IO.Excel.ExcelReader.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the BartelsOnline.Office.IO.Excel.ExcelReader class.
+            </summary>
+            <param name="fileName">The filename of the Excel workbook.</param>
+        </member>
+        <member name="M:BartelsOnline.Office.IO.Excel.ExcelReader.ReadCell(System.String,System.String)">
+            <summary>
+            Returns a cell value from a sheet.
+            </summary>
+            <param name="sheetName">The sheet name.</param>
+            <param name="cellAddress">The cell address.</param>
+            <returns>The cell value as a string type.</returns>
+        </member>
+        <member name="M:BartelsOnline.Office.IO.Excel.ExcelReader.ReadCell(System.Int32,System.String)">
+            <summary>
+            Returns a cell value from a sheet.
+            </summary>
+            <param name="sheetNumber">The sheet number.</param>
+            <param name="cellAddress">The cell address.</param>
+            <returns>The cell value as a string type.</returns>
+        </member>
+        <member name="M:BartelsOnline.Office.IO.Excel.ExcelReader.ReadRange(System.String,System.String)">
+            <summary>
+            Returns range values from a sheet.
+            </summary>
+            <param name="sheetName">The sheet name.</param>
+            <param name="rangeAddress">The range address in 'A1:B2' format.</param>
+            <returns>A List with row and column data of the specified address.</returns>
+        </member>
+        <member name="M:BartelsOnline.Office.IO.Excel.ExcelReader.ReadRange(System.Int32,System.String)">
+            <summary>
+            Returns range values from a sheet.
+            </summary>
+            <param name="sheetNumber">The sheet number.</param>
+            <param name="rangeAddress">The range address in 'A1:B2' format.</param>
+            <returns>A List with row and column data of the specified address.</returns>
+        </member>
+        <member name="M:BartelsOnline.Office.IO.Excel.ExcelReader.GetSheet(System.Int32)">
+            <summary>
+            Get a sheet reference.
+            </summary>
+            <param name="id">The sheet number (first sheet is 1).</param>
+            <returns>A Sheet type.</returns>
+        </member>
+        <member name="M:BartelsOnline.Office.IO.Excel.ExcelReader.GetSheet(System.String)">
+            <summary>
+            Get a sheet reference.
+            </summary>
+            <param name="name">The sheet name.</param>
+            <returns>A Sheet type.</returns>
+        </member>
+        <member name="M:BartelsOnline.Office.IO.Excel.ExcelReader.GetRow(DocumentFormat.OpenXml.Spreadsheet.Sheet,System.Int32)">
+            <summary>
+            Get a row reference.
+            </summary>
+            <param name="sheet">A sheet type.</param>
+            <param name="rowIndex">The row index.</param>
+            <returns>A Row type.</returns>
+        </member>
+        <member name="M:BartelsOnline.Office.IO.Excel.ExcelReader.GetCell(DocumentFormat.OpenXml.Spreadsheet.Sheet,System.String)">
+            <summary>
+            Gets a cell reference.
+            </summary>
+            <param name="sheet">A sheet type.</param>
+            <param name="address">The cell address.</param>
+            <returns>A Cell type.</returns>
+        </member>
+        <member name="M:BartelsOnline.Office.IO.Excel.ExcelReader.GetCell(DocumentFormat.OpenXml.Spreadsheet.Sheet,System.Int32,System.Int32)">
+            <summary>
+            Gets a cell reference.
+            </summary>
+            <param name="sheet">A sheet type.</param>
+            <param name="rowIndex">The row index (first row is 1).</param>
+            <param name="columnIndex">The column index (first column is 1).</param>
+            <returns>A Cell type.</returns>
+        </member>
+        <member name="M:BartelsOnline.Office.IO.Excel.ExcelReader.GetCellValue(DocumentFormat.OpenXml.Spreadsheet.Sheet,System.String)">
+            <summary>
+            Returns a cell value.
+            </summary>
+            <param name="sheet">A sheet.</param>
+            <param name="address">The cell address.</param>
+            <returns>The cell value as a string type.</returns>
+        </member>
+        <member name="M:BartelsOnline.Office.IO.Excel.ExcelReader.GetColumnName(System.Int32)">
+            <summary>
+            Returns the column name.
+            </summary>
+            <param name="columnIndex">The column index.</param>
+            <returns>The column name.</returns>
+        </member>
+        <member name="M:BartelsOnline.Office.IO.Excel.ExcelReader.GetColumnIndex(System.String)">
+            <summary>
+            Returns the column index.
+            </summary>
+            <param name="columnName">The column name.</param>
+            <returns>The column index.</returns>
+        </member>
+        <member name="M:BartelsOnline.Office.IO.Excel.ExcelReader.GetCellAddress(System.String)">
+            <summary>
+            Converts a cell address like 'B12' into a CellAddress type.
+            </summary>
+            <param name="address">The cell address.</param>
+            <returns>A CellAdress type.</returns>
+        </member>
+        <member name="M:BartelsOnline.Office.IO.Excel.ExcelReader.GetCellValue(DocumentFormat.OpenXml.Spreadsheet.Cell)">
+            <summary>
+            Returns a cell value.
+            </summary>      
+            <param name="cell">A cell.</param>
+            <returns>The cell value as a string type.</returns>
+        </member>
+        <member name="M:BartelsOnline.Office.IO.Excel.ExcelReader.ReadWorksheetRange(DocumentFormat.OpenXml.Spreadsheet.Sheet,System.String)">
+            <summary>
+            Returns range values from a sheet.
+            </summary>
+            <param name="sheet">A sheet.</param>
+            <param name="rangeAddress">A range address.</param>
+            <returns>A List with row and column data of the specified address.</returns>
+        </member>
+        <member name="T:BartelsOnline.Office.IO.Excel.IExcelReader">
+            <summary>
+            This is the interface for the ExcelReader class.
+            </summary>
+        </member>
+        <member name="M:BartelsOnline.Office.IO.Excel.IExcelReader.ReadCell(System.String,System.String)">
+            <summary>
+            Returns a cell value from a sheet.
+            </summary>
+            <param name="sheetName">The sheet name.</param>
+            <param name="cellAddress">The cell address.</param>
+            <returns>The cell value as a string type.</returns>
+        </member>
+        <member name="M:BartelsOnline.Office.IO.Excel.IExcelReader.ReadCell(System.Int32,System.String)">
+            <summary>
+            Returns a cell value from a sheet.
+            </summary>
+            <param name="sheetNumber">The sheet number.</param>
+            <param name="cellAddress">The cell address.</param>
+            <returns>The cell value as a string type.</returns>
+        </member>
+        <member name="M:BartelsOnline.Office.IO.Excel.IExcelReader.ReadRange(System.String,System.String)">
+            <summary>
+            Returns range values from a sheet.
+            </summary>
+            <param name="sheetName">The sheet name.</param>
+            <param name="rangeAddress">The range address in 'A1:B2' format.</param>
+            <returns>A List with row and column data of the specified address.</returns>
+        </member>
+        <member name="M:BartelsOnline.Office.IO.Excel.IExcelReader.ReadRange(System.Int32,System.String)">
+            <summary>
+            Returns range values from a sheet.
+            </summary>
+            <param name="sheetNumber">The sheet number.</param>
+            <param name="rangeAddress">The range address in 'A1:B2' format.</param>
+            <returns>A List with row and column data of the specified address.</returns>
+        </member>
+        <member name="T:BartelsOnline.Office.IO.Excel.Models.XlsRange">
+            <summary>
+            This represents a single Excel range.
+            </summary>
+        </member>
+        <member name="P:BartelsOnline.Office.IO.Excel.Models.XlsRange.ColumnName">
+            <summary>
+            The worksheet column name of this range, e.g. 'A'.
+            </summary>
+        </member>
+        <member name="P:BartelsOnline.Office.IO.Excel.Models.XlsRange.ColumnIndex">
+            <summary>
+            The worksheet column index of this range.
+            </summary>
+        </member>
+        <member name="P:BartelsOnline.Office.IO.Excel.Models.XlsRange.RowIndex">
+            <summary>
+            The worksheet row index of this range.
+            </summary>
+        </member>
+        <member name="P:BartelsOnline.Office.IO.Excel.Models.XlsRange.Address">
+            <summary>
+            The worksheet range address.
+            </summary>
+        </member>
+        <member name="P:BartelsOnline.Office.IO.Excel.Models.XlsRange.Value">
+            <summary>
+            The range value as a string type.
+            </summary>
+        </member>
+        <member name="M:BartelsOnline.Office.IO.Excel.Models.XlsRange.#ctor(System.String,System.Int32,System.Int32,System.String,System.String)">
+            <summary>
+            Initializes a new instance of the BartelsOnline.Office.IO.Excel.Models.XlsRange class.
+            </summary>
+            <param name="columnName">The worksheet column name of this range, e.g. 'A'.</param>
+            <param name="columnIndex">The worksheet column index of this range.</param>
+            <param name="rowIndex">The worksheet row index of this range.</param>
+            <param name="address">The worksheet range address.</param>
+            <param name="value">The range value as a string type.</param>
+        </member>
+    </members>
+</doc>
