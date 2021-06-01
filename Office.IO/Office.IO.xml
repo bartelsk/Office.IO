@@ -108,13 +108,6 @@
             <param name="columnName">The column name.</param>
             <returns>The column index.</returns>
         </member>
-        <member name="M:BartelsOnline.Office.IO.Excel.ExcelReader.GetCellAddress(System.String)">
-            <summary>
-            Converts a cell address like 'B12' into a CellAddress type.
-            </summary>
-            <param name="address">The cell address.</param>
-            <returns>A CellAdress type.</returns>
-        </member>
         <member name="M:BartelsOnline.Office.IO.Excel.ExcelReader.GetCellValue(DocumentFormat.OpenXml.Spreadsheet.Cell)">
             <summary>
             Returns a cell value.
@@ -129,6 +122,15 @@
             <param name="sheet">A sheet.</param>
             <param name="rangeAddress">A range address.</param>
             <returns>A List with row and column data of the specified address.</returns>
+        </member>
+        <member name="M:BartelsOnline.Office.IO.Excel.ExcelReader.GetCellAddress(System.String,System.Boolean,System.Boolean@)">
+            <summary>
+            Converts a cell address like 'B12' or a column reference like 'A' into a CellAddress type.
+            </summary>
+            <param name="address">The cell reference.</param>
+            <param name="isTopLeftLocation">True if this method is used to parse the top left cell address of the range.</param>
+            <param name="isColumnReference">Specifies whether the passed reference is a column reference like 'A'.</param>
+            <returns>A CellAdress type.</returns>
         </member>
         <member name="M:BartelsOnline.Office.IO.Excel.ExcelReader.IsNumeric(System.String)">
             <summary>

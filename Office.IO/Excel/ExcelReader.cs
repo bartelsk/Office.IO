@@ -246,30 +246,7 @@ namespace BartelsOnline.Office.IO.Excel
 
          return sum;
       }
-
-      /// <summary>
-      /// Converts a cell address like 'B12' into a CellAddress type.
-      /// </summary>
-      /// <param name="address">The cell address.</param>
-      /// <returns>A CellAdress type.</returns>
-      private static CellAddress GetCellAddress(string address)
-      {
-         int startIndex = address.IndexOfAny("0123456789".ToCharArray());
-         if (startIndex > -1)
-         {
-            return new CellAddress()
-            {
-               ColumnIndex = GetColumnIndex(address.Substring(0, startIndex)),
-               ColumnName = address.Substring(0, startIndex),
-               RowIndex = int.Parse(address.Substring(startIndex))
-            };
-         }
-         else
-         {
-            return new CellAddress() { ColumnName = address, ColumnIndex = -1, RowIndex = 1 };
-         }
-      }
-
+      
       /// <summary>
       /// Returns a cell value.
       /// </summary>      
@@ -310,7 +287,7 @@ namespace BartelsOnline.Office.IO.Excel
             }
          }
          return cellValue;
-      }
+      }  
 
       /// <summary>
       /// Returns range values from a sheet.
@@ -323,75 +300,98 @@ namespace BartelsOnline.Office.IO.Excel
          List<List<XlsRange>> rowData = null;
          if (sheet != null)
          {
-            int sepPos = rangeAddress.IndexOf(":");
-            if (sepPos > 0)
+            string[] locations = rangeAddress.Split(":");
+            if (locations.Length == 2)
             {
                rowData = new List<List<XlsRange>>();
-               
+
                // Get range reference
-               CellAddress topLeft = GetCellAddress(rangeAddress.Substring(0, sepPos));
-               CellAddress bottomRight = GetCellAddress(rangeAddress.Substring(sepPos + 1));
-
-               if (topLeft.ColumnIndex > -1)
+               CellAddress topLeft = GetCellAddress(locations[0], true, out bool isColumnReference);
+               CellAddress bottomRight = GetCellAddress(locations[1], false, out bool isAlsoColumnReference);
+               
+               // Validate range
+               if (isColumnReference && !isAlsoColumnReference || !isColumnReference && isAlsoColumnReference)
                {
-                  // Range of type "A1:B2"
-                  for (int row = topLeft.RowIndex; row <= bottomRight.RowIndex; row++)
-                  {
-                     List<XlsRange> columnData = new();
-                     for (int col = topLeft.ColumnIndex; col <= bottomRight.ColumnIndex; col++)
-                     {
-                        Cell theCell = GetCell(sheet, row, col);
-                        XlsRange xlsRange = new(GetColumnName(col), col, row, GetColumnName(col) + row, null);
-
-                        if (theCell != null)
-                        {
-                           xlsRange.Value = GetCellValue(theCell);
-                        }
-
-                        columnData.Add(xlsRange);
-                     }
-                     rowData.Add(columnData);
-                  }
+                  throw new ArgumentException($"The specified range address '{ rangeAddress }' is invalid.");
                }
-               else
+
+               // Loop range
+               for (int row = topLeft.RowIndex; row <= bottomRight.RowIndex; row++)
                {
-                  // Range of type "A:B"
-                  for (int row = topLeft.RowIndex; row <= 1048576; row++)
+                  List<XlsRange> columnData = new();
+                  for (int col = topLeft.ColumnIndex; col <= bottomRight.ColumnIndex; col++)
                   {
-                     List<XlsRange> columnData = new();
-                     for (int col = 1; col <= 200; col++)
+                     // Get cell reference
+                     Cell theCell = GetCell(sheet, row, col);
+                     XlsRange xlsRange = new(GetColumnName(col), col, row, GetColumnName(col) + row, null);
+
+                     // The cell reference will be null if it doesn't have a value
+                     if (theCell != null)
                      {
-                        Cell theCell = GetCell(sheet, row, col);
-                        if (theCell != null)
-                        {
-                           XlsRange xlsRange = new(GetColumnName(col), col, row, GetColumnName(col) + row, GetCellValue(theCell));                           
-                           columnData.Add(xlsRange);
-                        }
-                        else
-                        {
-                           // No more columns in the current region
-                           break;
-                        }
-                     }
-                     if (columnData != null && columnData.Count > 0)
-                     {
-                        rowData.Add(columnData);
+                        xlsRange.Value = GetCellValue(theCell);
                      }
                      else
                      {
-                        // Current region is now null, so no more rows
-                        break;
+                        // Stop processing column range when the first empty value is found                        
+                        if (isColumnReference)
+                        {                           
+                           bottomRight.RowIndex = row;
+                           break;
+                        }
                      }
+
+                     // Store column data
+                     columnData.Add(xlsRange);
                   }
+
+                  // Store row data
+                  if (columnData.Count > 0)
+                  {
+                     rowData.Add(columnData);
+                  }                                                                        
                }
             }
             else
             {
-               throw new ArgumentException($"Invalid range address.");
+               throw new ArgumentException($"The specified range address '{ rangeAddress }' is invalid.");
             }
          }
          return rowData;
-      }    
+      }
+
+      /// <summary>
+      /// Converts a cell address like 'B12' or a column reference like 'A' into a CellAddress type.
+      /// </summary>
+      /// <param name="address">The cell reference.</param>
+      /// <param name="isTopLeftLocation">True if this method is used to parse the top left cell address of the range.</param>
+      /// <param name="isColumnReference">Specifies whether the passed reference is a column reference like 'A'.</param>
+      /// <returns>A CellAdress type.</returns>
+      private static CellAddress GetCellAddress(string address, bool isTopLeftLocation, out bool isColumnReference)
+      {
+         int startIndex = address.IndexOfAny("0123456789".ToCharArray());
+         if (startIndex > -1)
+         {
+            // Single cell format: "A1" 
+            isColumnReference = false;
+            return new CellAddress()
+            {
+               ColumnIndex = GetColumnIndex(address.Substring(0, startIndex)),
+               ColumnName = address.Substring(0, startIndex),
+               RowIndex = int.Parse(address.Substring(startIndex))
+            };
+         }
+         else
+         {
+            // Range format: "A" 
+            isColumnReference = true;
+            return new CellAddress()
+            {
+               ColumnIndex = GetColumnIndex(address),
+               ColumnName = address,
+               RowIndex = isTopLeftLocation ? 1 : 1048576  // Max nr. of rows
+            };
+         }
+      }
 
       /// <summary>
       /// Checks whether the specified string contains numbers only. 
